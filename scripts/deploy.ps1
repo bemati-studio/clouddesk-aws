@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 
 $ProjectRegion = if ($env:AWS_REGION) { $env:AWS_REGION } else { "us-east-1" }
 $StackName = if ($env:STACK_NAME) { $env:STACK_NAME } else { "clouddesk-aws" }
@@ -14,7 +14,7 @@ aws sts get-caller-identity | Out-Null
 Push-Location "$RootDir\infrastructure"
 try {
   sam build
-  if ($LASTEXITCODE -ne 0) { throw "Falló sam build." }
+  if ($LASTEXITCODE -ne 0) { throw "FallÃ³ sam build." }
 
   sam deploy `
     --stack-name $StackName `
@@ -28,7 +28,7 @@ try {
       NotificationEmail=$NotificationEmail `
       BudgetEmail=$BudgetEmail `
       MonthlyBudgetUsd=$MonthlyBudgetUsd
-  if ($LASTEXITCODE -ne 0) { throw "Falló sam deploy." }
+  if ($LASTEXITCODE -ne 0) { throw "FallÃ³ sam deploy." }
 } finally {
   Pop-Location
 }
@@ -48,12 +48,12 @@ $FrontendUrl = Get-StackOutput "FrontendUrl"
 $Bucket = Get-StackOutput "FrontendBucketName"
 $DistributionId = Get-StackOutput "FrontendDistributionId"
 
-$Config = (Get-Content "$RootDir\frontend\config.template.js" -Raw) `
-  .Replace("__REGION__", $ProjectRegion) `
-  .Replace("__API_URL__", $ApiUrl) `
-  .Replace("__COGNITO_DOMAIN__", $CognitoDomain) `
-  .Replace("__CLIENT_ID__", $ClientId) `
-  .Replace("__REDIRECT_URI__", $FrontendUrl)
+$Config = Get-Content "$RootDir\frontend\config.template.js" -Raw
+$Config = $Config.Replace("__REGION__", $ProjectRegion)
+$Config = $Config.Replace("__API_URL__", $ApiUrl)
+$Config = $Config.Replace("__COGNITO_DOMAIN__", $CognitoDomain)
+$Config = $Config.Replace("__CLIENT_ID__", $ClientId)
+$Config = $Config.Replace("__REDIRECT_URI__", $FrontendUrl)
 Set-Content "$RootDir\frontend\config.js" $Config -Encoding utf8
 
 aws s3 sync "$RootDir\frontend" "s3://$Bucket" `
@@ -61,8 +61,8 @@ aws s3 sync "$RootDir\frontend" "s3://$Bucket" `
   --delete `
   --exclude "config.template.js" `
   --exclude "config.example.js"
-if ($LASTEXITCODE -ne 0) { throw "Falló la publicación en S3." }
+if ($LASTEXITCODE -ne 0) { throw "FallÃ³ la publicaciÃ³n en S3." }
 
 aws cloudfront create-invalidation --distribution-id $DistributionId --paths "/*" | Out-Null
 Write-Host "CloudDesk publicado en: $FrontendUrl"
-Write-Host "Si configuraste SNS, confirma la suscripción recibida por correo."
+Write-Host "Si configuraste SNS, confirma la suscripciÃ³n recibida por correo."
