@@ -1,0 +1,16 @@
+{
+  "name": "clouddesk-aws",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mesa de ayuda serverless construida con servicios reales de AWS.",
+  "scripts": {
+    "test": "node --test backend/tests/*.test.mjs",
+    "check": "node --check backend/src/handler.mjs && node --check backend/src/domain.mjs && node --check frontend/app.js",
+    "validate": "npm run check && npm test"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
+
