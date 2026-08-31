@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2010-09-09"
+﻿AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: CloudDesk AWS - mesa de ayuda serverless de Bemati Studio
 
@@ -223,7 +223,6 @@ Resources:
     Properties:
       CodeUri: ../backend/src/
       Handler: handler.handler
-      ReservedConcurrentExecutions: 5
       Policies:
         - Version: "2012-10-17"
           Statement:
